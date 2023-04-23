@@ -25,19 +25,8 @@ public class PersonServices {
 		}
 		return persons;
 	}
-	
-	private Person mockPerson(int i) {
-		Person person = new Person();
-		person.setId(counter.incrementAndGet());
-		person.setFirstName("First name "+ i);
-		person.setLastName("Last name " + i);
-		person.setAddress("Some address in Brazil " + i);
-		person.setGender("Male " + 1);
-		return person;
-	}
 
 	public Person findById(String id) {
-		
 		logger.info("Finding one person");
 		
 		Person person = new Person();
@@ -47,5 +36,29 @@ public class PersonServices {
 		person.setAddress("Av. Pedro Ludovico Teixeira");
 		person.setGender("Masculino");
 		return person;
+	}
+
+	private Person mockPerson(int i) {
+		Person person = new Person();
+		person.setId(counter.incrementAndGet());
+		person.setFirstName("First name "+ i);
+		person.setLastName("Last name " + i);
+		person.setAddress("Some address in Brazil " + i);
+		person.setGender("Male " + 1);
+		return person;
+	}
+	
+	public Person create(Person person) {
+		logger.info("Creating one person");
+		return person;
+	}
+	
+	public Person update(Person person) {
+		logger.info("Updating one person");
+		return person;
+	}
+	
+	public void delete(String id) {
+		logger.info("Deleting one person!");
 	}
 }
