@@ -45,6 +45,16 @@ public class PersonServices {
 		return vo;
 	}
 	
+	public PersonVOV2 createV2(PersonVOV2 person) {
+		logger.info("Creating one person with V2");
+		
+		Person entity = DozerMapper.parseObject(person, Person.class);
+		
+		PersonVOV2 vo = DozerMapper.parseObject(repository.save(entity), PersonVOV2.class);
+		
+		return vo;
+	}
+	
 	public PersonVO update(PersonVO person) {
 		logger.info("Updating one person");
 		
