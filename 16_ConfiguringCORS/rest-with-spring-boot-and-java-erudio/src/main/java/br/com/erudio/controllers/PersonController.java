@@ -33,7 +33,7 @@ public class PersonController {
 	@Autowired
 	private PersonServices service;
 
-	@CrossOrigin(origins = "http://localhost:8080")
+	@CrossOrigin({"http://localhost:8080", "https://erudio.com.br"})
 	@GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML,  MediaType.APPLICATION_YML})
 	@Operation(summary = "Finds a Person", description = "Finds a Person", tags = {"People"}, 
 	responses = {
