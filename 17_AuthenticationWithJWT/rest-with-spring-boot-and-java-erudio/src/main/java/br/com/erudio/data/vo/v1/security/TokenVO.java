@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class TokenVo implements Serializable {
+public class TokenVO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -15,9 +15,9 @@ public class TokenVo implements Serializable {
 	private String accessToken;
 	private String refreshToken;
 	
-	public TokenVo() {}
+	public TokenVO() {}
 
-	public TokenVo(String username, Boolean authenticated, Date created, Date expiration, String accessToken, String refreshToken) {
+	public TokenVO(String username, Boolean authenticated, Date created, Date expiration, String accessToken, String refreshToken) {
 		this.username = username;
 		this.authenticated = authenticated;
 		this.created = created;
@@ -87,7 +87,7 @@ public class TokenVo implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TokenVo other = (TokenVo) obj;
+		TokenVO other = (TokenVO) obj;
 		return Objects.equals(accessToken, other.accessToken) && Objects.equals(authenticated, other.authenticated)
 				&& Objects.equals(created, other.created) && Objects.equals(expiration, other.expiration)
 				&& Objects.equals(refreshToken, other.refreshToken) && Objects.equals(username, other.username);
