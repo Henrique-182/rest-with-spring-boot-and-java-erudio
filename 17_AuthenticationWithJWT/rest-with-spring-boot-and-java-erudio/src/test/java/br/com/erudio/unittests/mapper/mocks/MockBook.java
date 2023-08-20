@@ -9,7 +9,8 @@ import br.com.erudio.model.Book;
 
 public class MockBook {
 
-	public Book mockEntity() {
+
+    public Book mockEntity() {
         return mockEntity(0);
     }
     
@@ -20,7 +21,7 @@ public class MockBook {
     public List<Book> mockEntityList() {
         List<Book> books = new ArrayList<Book>();
         for (int i = 0; i < 14; i++) {
-        	books.add(mockEntity(i));
+            books.add(mockEntity(i));
         }
         return books;
     }
@@ -28,30 +29,28 @@ public class MockBook {
     public List<BookVO> mockVOList() {
         List<BookVO> books = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
-        	books.add(mockVO(i));
+            books.add(mockVO(i));
         }
         return books;
     }
     
     public Book mockEntity(Integer number) {
-    	Book book = new Book();
-    	book.setId(number.longValue());
-    	book.setTitle("Title Test" + number);
-    	book.setAuthor("Author Test" + number);
-    	book.setLaunchDate(new Date(number));
-    	book.setPrice(number * 10.0);
-    	
+        Book book = new Book();
+        book.setId(number.longValue());
+        book.setAuthor("Some Author" + number);
+        book.setLaunchDate(new Date());
+        book.setPrice(25D);
+        book.setTitle("Some Title" + number);
         return book;
     }
 
     public BookVO mockVO(Integer number) {
-    	BookVO book = new BookVO();
-    	book.setKey(number.longValue());
-    	book.setTitle("Title Test" + number);
-    	book.setAuthor("Author Test" + number);
-    	book.setLaunchDate(new Date(number));
-    	book.setPrice(number * 10.0);
-    	
+        BookVO book = new BookVO();
+        book.setKey(number.longValue());
+        book.setAuthor("Some Author" + number);
+        book.setLaunchDate(new Date());
+        book.setPrice(25D);
+        book.setTitle("Some Title" + number);
         return book;
     }
 

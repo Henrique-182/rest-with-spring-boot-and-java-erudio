@@ -10,51 +10,56 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import br.com.erudio.serialization.converter.YamlJackson2HttpMessageConverter;
+import br.com.erudio.serialization.converter.YamlJackson2HttpMesageConverter;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
-	
+public class WebConfig implements WebMvcConfigurer{
+
 	private static final MediaType MEDIA_TYPE_APPLICATION_YML = MediaType.valueOf("application/x-yaml");
 	
 	@Value("${cors.originPatterns:default}")
-	private String corsOriginPatters = "";
+	private String corsOriginPatterns = "";
 	
 	@Override
 	public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new YamlJackson2HttpMessageConverter());
+		converters.add(new YamlJackson2HttpMesageConverter());
 	}
-	
+
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		var allowedOrigins = corsOriginPatters.split(",");
-		
+		var allowedOrigins = corsOriginPatterns.split(",");
 		registry.addMapping("/**")
-			//.allowedOrigins("GET", "POST", "PUT")
+			//.allowedMethods("GET", "POST", "PUT")
 			.allowedMethods("*")
 			.allowedOrigins(allowedOrigins)
-			.allowCredentials(true);
+		.allowCredentials(true);
 	}
 
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+		// https://www.baeldung.com/spring-mvc-content-negotiation-json-xml
+		// Via EXTENSION. http://localhost:8080/api/person/v1.xml DEPRECATED on SpringBoot 2.6
+		
+		// Via QUERY PARAM. http://localhost:8080/api/person/v1?mediaType=xml
 		/*
-		configurer.favorParameter(true);
-		configurer.parameterName("mediaType");
-		configurer.ignoreAcceptHeader(true); 
-		configurer.useRegisteredExtensionsOnly(false);
-		configurer.defaultContentType(MediaType.APPLICATION_JSON);
-		configurer.mediaType("json", MediaType.APPLICATION_JSON);
-		configurer.mediaType("xml", MediaType.APPLICATION_XML);
+		configurer.favorParameter(true)
+			.parameterName("mediaType").ignoreAcceptHeader(true)
+			.useRegisteredExtensionsOnly(false)
+			.defaultContentType(MediaType.APPLICATION_JSON)
+				.mediaType("json", MediaType.APPLICATION_JSON)
+				.mediaType("xml", MediaType.APPLICATION_XML);
 		*/
 		
-		configurer.favorParameter(false);
-		configurer.ignoreAcceptHeader(false); 
-		configurer.useRegisteredExtensionsOnly(false);
-		configurer.defaultContentType(MediaType.APPLICATION_JSON);
-		configurer.mediaType("json", MediaType.APPLICATION_JSON);
-		configurer.mediaType("xml", MediaType.APPLICATION_XML);
-		configurer.mediaType("x-yaml", MEDIA_TYPE_APPLICATION_YML);
+		// Via HEADER PARAM. http://localhost:8080/api/person/v1
+		
+		configurer.favorParameter(false)
+		.ignoreAcceptHeader(false)
+		.useRegisteredExtensionsOnly(false)
+		.defaultContentType(MediaType.APPLICATION_JSON)
+			.mediaType("json", MediaType.APPLICATION_JSON)
+			.mediaType("xml", MediaType.APPLICATION_XML)
+			.mediaType("x-yaml", MEDIA_TYPE_APPLICATION_YML)
+			;
 	}
 
 }

@@ -1,12 +1,8 @@
 package br.com.erudio.unittests.mockito.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import br.com.erudio.data.vo.v1.BookVO;
-import br.com.erudio.exception.RequiredObjectIsNullException;
+import br.com.erudio.exceptions.RequiredObjectIsNullException;
 import br.com.erudio.model.Book;
 import br.com.erudio.repositories.BookRepository;
 import br.com.erudio.services.BookServices;
@@ -37,69 +33,37 @@ class BookServicesTest {
 	private BookServices service;
 	
 	@Mock
-	private BookRepository repository;
+	BookRepository repository;
 	
 	@BeforeEach
-	void setUp() {
+	void setUpMocks() throws Exception {
 		input = new MockBook();
 		MockitoAnnotations.openMocks(this);
-	}
-	
-	@Test
-	void testFindAll() {
-		List<Book> list = input.mockEntityList();
-		
-		when(repository.findAll()).thenReturn(list);
-		
-		List<BookVO> books = service.findAll();
-		
-		assertNotNull(books);
-		assertEquals(14, books.size());
-		
-		var bookOne = books.get(1);
-		assertNotNull(bookOne.getKey());
-		assertNotNull(bookOne.getLinks());
-		
-		assertTrue(bookOne.toString().contains("links: [</api/book/v1/1>;rel=\"self\"]"));
-		assertEquals("Title Test1", bookOne.getTitle());
-		assertEquals("Author Test1", bookOne.getAuthor());
-		assertEquals(new Date(bookOne.getKey()), bookOne.getLaunchDate());
-		assertEquals(10.0, bookOne.getPrice());
-		
-		var bookFour = books.get(4);
-		assertNotNull(bookFour.getKey());
-		assertNotNull(bookFour.getLinks());
-		
-		assertTrue(bookFour.toString().contains("links: [</api/book/v1/4>;rel=\"self\"]"));
-		assertEquals("Title Test4", bookFour.getTitle());
-		assertEquals("Author Test4", bookFour.getAuthor());
-		assertEquals(new Date(bookFour.getKey()), bookFour.getLaunchDate());
-		assertEquals(40.0, bookFour.getPrice());
 	}
 
 	@Test
 	void testFindById() {
-		Book entity = input.mockEntity(1);
+		Book entity = input.mockEntity(1); 
 		entity.setId(1L);
 		
 		when(repository.findById(1L)).thenReturn(Optional.of(entity));
 		
-		BookVO result = service.findById(1L);
-		
+		var result = service.findById(1L);
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
 		
 		assertTrue(result.toString().contains("links: [</api/book/v1/1>;rel=\"self\"]"));
-		assertEquals("Title Test1", result.getTitle());
-		assertEquals("Author Test1", result.getAuthor());
-		assertEquals(new Date(result.getKey()), result.getLaunchDate());
-		assertEquals(10.0, result.getPrice());
+		assertEquals("Some Author1", result.getAuthor());
+		assertEquals("Some Title1", result.getTitle());
+		assertEquals(25D, result.getPrice());
+		assertNotNull(result.getLaunchDate());
 	}
-
+	
 	@Test
 	void testCreate() {
-		Book entity = input.mockEntity(1);
+		Book entity = input.mockEntity(1); 
+		entity.setId(1L);
 		
 		Book persisted = entity;
 		persisted.setId(1L);
@@ -109,35 +73,35 @@ class BookServicesTest {
 		
 		when(repository.save(entity)).thenReturn(persisted);
 		
-		BookVO result = service.create(vo);
+		var result = service.create(vo);
 		
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
 		
 		assertTrue(result.toString().contains("links: [</api/book/v1/1>;rel=\"self\"]"));
-		assertEquals("Title Test1", result.getTitle());
-		assertEquals("Author Test1", result.getAuthor());
-		assertEquals(new Date(result.getKey()), result.getLaunchDate());
-		assertEquals(10.0, result.getPrice());
+		assertEquals("Some Author1", result.getAuthor());
+		assertEquals("Some Title1", result.getTitle());
+		assertEquals(25D, result.getPrice());
+		assertNotNull(result.getLaunchDate());
 	}
 	
 	@Test
-	void testCreateWithNullPerson() {
+	void testCreateWithNullBook() {
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
 			service.create(null);
 		});
 		
-		String expectedMessage = "It is not allowed to persist a null object";
+		String expectedMessage = "It is not allowed to persist a null object!";
 		String actualMessage = exception.getMessage();
 		
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
-	
+
+
 	@Test
 	void testUpdate() {
-		Book entity = input.mockEntity(1);
-		entity.setId(1L);
+		Book entity = input.mockEntity(1); 
 		
 		Book persisted = entity;
 		persisted.setId(1L);
@@ -145,29 +109,32 @@ class BookServicesTest {
 		BookVO vo = input.mockVO(1);
 		vo.setKey(1L);
 		
+
 		when(repository.findById(1L)).thenReturn(Optional.of(entity));
 		when(repository.save(entity)).thenReturn(persisted);
 		
-		BookVO result = service.update(vo);
+		var result = service.update(vo);
 		
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
 		
 		assertTrue(result.toString().contains("links: [</api/book/v1/1>;rel=\"self\"]"));
-		assertEquals("Title Test1", result.getTitle());
-		assertEquals("Author Test1", result.getAuthor());
-		assertEquals(new Date(result.getKey()), result.getLaunchDate());
-		assertEquals(10.0, result.getPrice());
+		assertEquals("Some Author1", result.getAuthor());
+		assertEquals("Some Title1", result.getTitle());
+		assertEquals(25D, result.getPrice());
+		assertNotNull(result.getLaunchDate());
 	}
 	
+
+	
 	@Test
-	void testUpdateWithNullPerson() {
+	void testUpdateWithNullBook() {
 		Exception exception = assertThrows(RequiredObjectIsNullException.class, () -> {
 			service.update(null);
 		});
 		
-		String expectedMessage = "It is not allowed to persist a null object";
+		String expectedMessage = "It is not allowed to persist a null object!";
 		String actualMessage = exception.getMessage();
 		
 		assertTrue(actualMessage.contains(expectedMessage));
@@ -175,11 +142,60 @@ class BookServicesTest {
 	
 	@Test
 	void testDelete() {
-		Book entity = input.mockEntity(1);
+		Book entity = input.mockEntity(1); 
 		entity.setId(1L);
 		
 		when(repository.findById(1L)).thenReturn(Optional.of(entity));
 		
 		service.delete(1L);
 	}
+	
+	@Test
+	void testFindAll() {
+		List<Book> list = input.mockEntityList(); 
+		
+		when(repository.findAll()).thenReturn(list);
+		
+		var people = service.findAll();
+		
+		assertNotNull(people);
+		assertEquals(14, people.size());
+		
+		var bookOne = people.get(1);
+		
+		assertNotNull(bookOne);
+		assertNotNull(bookOne.getKey());
+		assertNotNull(bookOne.getLinks());
+		
+		assertTrue(bookOne.toString().contains("links: [</api/book/v1/1>;rel=\"self\"]"));
+		assertEquals("Some Author1", bookOne.getAuthor());
+		assertEquals("Some Title1", bookOne.getTitle());
+		assertEquals(25D, bookOne.getPrice());
+		assertNotNull(bookOne.getLaunchDate());
+		
+		var bookFour = people.get(4);
+		
+		assertNotNull(bookFour);
+		assertNotNull(bookFour.getKey());
+		assertNotNull(bookFour.getLinks());
+		
+		assertTrue(bookFour.toString().contains("links: [</api/book/v1/4>;rel=\"self\"]"));
+		assertEquals("Some Author4", bookFour.getAuthor());
+		assertEquals("Some Title4", bookFour.getTitle());
+		assertEquals(25D, bookFour.getPrice());
+		assertNotNull(bookFour.getLaunchDate());
+		
+		var bookSeven = people.get(7);
+		
+		assertNotNull(bookSeven);
+		assertNotNull(bookSeven.getKey());
+		assertNotNull(bookSeven.getLinks());
+		
+		assertTrue(bookSeven.toString().contains("links: [</api/book/v1/7>;rel=\"self\"]"));
+		assertEquals("Some Author7", bookSeven.getAuthor());
+		assertEquals("Some Title7", bookSeven.getTitle());
+		assertEquals(25D, bookSeven.getPrice());
+		assertNotNull(bookSeven.getLaunchDate());
+	}
+
 }
