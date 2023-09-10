@@ -1,5 +1,7 @@
 *.class
 
+**/.metadata
+
 
 /node_modules
 
