@@ -150,6 +150,43 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest{
 	}
 	
 	@Test
+	@Order(3)
+	public void testFindById() throws JsonMappingException, JsonProcessingException {
+		mockPerson();
+		
+		var content = given().spec(specification)
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+					.pathParam("id", person.getId())
+					.when()
+					.get("{id}")
+				.then()
+					.statusCode(200)
+						.extract()
+						.body()
+							.asString();
+		
+		PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
+		person = persistedPerson;
+		
+		assertNotNull(persistedPerson);
+		
+		assertNotNull(persistedPerson.getId());
+		assertNotNull(persistedPerson.getFirstName());
+		assertNotNull(persistedPerson.getLastName());
+		assertNotNull(persistedPerson.getAddress());
+		assertNotNull(persistedPerson.getGender());
+		assertNotNull(persistedPerson.getEnabled());
+		
+		assertTrue(persistedPerson.getId() > 0);
+		
+		assertEquals("Nelson", persistedPerson.getFirstName());
+		assertEquals("Piquet", persistedPerson.getLastName());
+		assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
+		assertEquals("Male", persistedPerson.getGender());
+		assertEquals(false, persistedPerson.getEnabled());
+	}
+	
+	@Test
 	@Order(4)
 	public void testUpdate() throws JsonMappingException, JsonProcessingException {
 		person.setLastName("Piquet Souto Maior");
@@ -182,43 +219,6 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest{
 		assertEquals(person.getId(), persistedPerson.getId());
 		assertEquals("Nelson", persistedPerson.getFirstName());
 		assertEquals("Piquet Souto Maior", persistedPerson.getLastName());
-		assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
-		assertEquals("Male", persistedPerson.getGender());
-		assertEquals(false, persistedPerson.getEnabled());
-	}
-
-	@Test
-	@Order(4)
-	public void testFindById() throws JsonMappingException, JsonProcessingException {
-		mockPerson();
-		
-		var content = given().spec(specification)
-				.contentType(TestConfigs.CONTENT_TYPE_JSON)
-					.pathParam("id", person.getId())
-					.when()
-					.get("{id}")
-				.then()
-					.statusCode(200)
-						.extract()
-						.body()
-							.asString();
-		
-		PersonVO persistedPerson = objectMapper.readValue(content, PersonVO.class);
-		person = persistedPerson;
-		
-		assertNotNull(persistedPerson);
-		
-		assertNotNull(persistedPerson.getId());
-		assertNotNull(persistedPerson.getFirstName());
-		assertNotNull(persistedPerson.getLastName());
-		assertNotNull(persistedPerson.getAddress());
-		assertNotNull(persistedPerson.getGender());
-		assertNotNull(persistedPerson.getEnabled());
-		
-		assertTrue(persistedPerson.getId() > 0);
-		
-		assertEquals("Nelson", persistedPerson.getFirstName());
-		assertEquals("Piquet", persistedPerson.getLastName());
 		assertEquals("Brasília - DF - Brasil", persistedPerson.getAddress());
 		assertEquals("Male", persistedPerson.getGender());
 		assertEquals(false, persistedPerson.getEnabled());
