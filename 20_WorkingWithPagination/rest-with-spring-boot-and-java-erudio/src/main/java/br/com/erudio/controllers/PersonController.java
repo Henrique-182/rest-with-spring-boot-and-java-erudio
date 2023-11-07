@@ -1,11 +1,12 @@
 package br.com.erudio.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,7 +57,7 @@ public class PersonController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 		}
 	)
-	public ResponseEntity<Page<PersonVO>> findAll(
+	public ResponseEntity<PagedModel<EntityModel<PersonVO>>> findAll(
 		@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
 		@RequestParam(value = "size", defaultValue = "12", required = false) Integer size,
 		@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction
