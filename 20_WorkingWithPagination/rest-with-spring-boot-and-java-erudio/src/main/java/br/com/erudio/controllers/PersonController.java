@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,9 +58,12 @@ public class PersonController {
 	)
 	public ResponseEntity<Page<PersonVO>> findAll(
 		@RequestParam(value = "page", defaultValue = "0", required = false) Integer page,
-		@RequestParam(value = "limit", defaultValue = "12", required = false) Integer limit
+		@RequestParam(value = "size", defaultValue = "12", required = false) Integer size,
+		@RequestParam(value = "direction", defaultValue = "asc", required = false) String direction
 	) {
-		Pageable pageable = PageRequest.of(page, limit);
+		var sortDirection = "desc".equalsIgnoreCase(direction) ? Direction.DESC : Direction.ASC;
+		
+		Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "firstName"));
 		
 		return ResponseEntity.ok(service.findAll(pageable));
 	}
