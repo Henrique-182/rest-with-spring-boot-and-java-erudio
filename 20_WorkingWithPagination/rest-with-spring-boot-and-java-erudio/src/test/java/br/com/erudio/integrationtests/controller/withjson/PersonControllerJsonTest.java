@@ -15,7 +15,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +24,7 @@ import br.com.erudio.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.erudio.integrationtests.vo.AccountCredentialsVO;
 import br.com.erudio.integrationtests.vo.PersonVO;
 import br.com.erudio.integrationtests.vo.TokenVO;
+import br.com.erudio.integrationtests.vo.wrappers.WrapperPersonVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -240,9 +240,15 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest{
 	@Test
 	@Order(6)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException  {
+		Integer page = 3;
+		Integer size = 10;
+		String direction = "asc";
 		
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
 				.when()
 					.get()
 				.then()
@@ -251,27 +257,29 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest{
 						.body()
 							.asString();
 		
-		List<PersonVO> resultList  = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {});
+		WrapperPersonVO wrapper  = objectMapper.readValue(content, WrapperPersonVO.class);
+		
+		List<PersonVO> resultList = wrapper.getEmbedded().getPersons();
 		
 		assertNotNull(resultList);
 		
 		PersonVO personOne = resultList.get(0);
-		
-		assertEquals(1, personOne.getId());
-		assertEquals("Ayrton", personOne.getFirstName());
-		assertEquals("Senna", personOne.getLastName());
-		assertEquals("São Paulo", personOne.getAddress());
+
+		assertEquals(677, personOne.getId());
+		assertEquals("Alic", personOne.getFirstName());
+		assertEquals("Terbrug", personOne.getLastName());
+		assertEquals("3 Eagle Crest Court", personOne.getAddress());
 		assertEquals("Male", personOne.getGender());
 		assertEquals(true, personOne.getEnabled());
 		
 		PersonVO personTwo = resultList.get(1);
-		
-		assertEquals(2, personTwo.getId());
-		assertEquals("Leonardo", personTwo.getFirstName());
-		assertEquals("da Vinci", personTwo.getLastName());
-		assertEquals("Anchiano - Italy", personTwo.getAddress());
-		assertEquals("Male", personTwo.getGender());
-		assertEquals(true, personTwo.getEnabled());
+
+		assertEquals(414, personTwo.getId());
+		assertEquals("Alie", personTwo.getFirstName());
+		assertEquals("Yeld", personTwo.getLastName());
+		assertEquals("42 Messerschmidt Crossing", personTwo.getAddress());
+		assertEquals("Female", personTwo.getGender());
+		assertEquals(false, personTwo.getEnabled());
 	}
 	
 	@Test
