@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +26,7 @@ import br.com.erudio.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.erudio.integrationtests.vo.AccountCredentialsVO;
 import br.com.erudio.integrationtests.vo.BookVO;
 import br.com.erudio.integrationtests.vo.TokenVO;
+import br.com.erudio.integrationtests.vo.pagedmodels.PagedModelBook;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -258,37 +258,35 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 	@Test
 	@Order(5)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException, ParseException {
+		Integer page = 1;
+		Integer size = 10;
+		String direction = "desc";
 		
-		var content = given().spec(specification)
+		var wrapper = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_YML)
 				.accept(TestConfigs.CONTENT_TYPE_YML)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
 				.when()
 					.get()
 				.then()
 					.statusCode(200)
 				.extract()
 					.body()
-					.as(BookVO[].class, objectMapper);
+					.as(PagedModelBook.class, objectMapper);
 		
-		List<BookVO> bookList = Arrays.asList(content);
+		List<BookVO> bookList = wrapper.getContent();
 		
 		BookVO bookOne = bookList.get(0);
 		
-		assertNotNull(bookOne);
-		
-		assertTrue(bookOne.getId() > 0);
-		
-		assertEquals(1, bookOne.getId());
-		assertEquals("Working effectively with legacy code", bookOne.getTitle());
-		assertEquals("Michael C. Feathers", bookOne.getAuthor());
-		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2017-11-29"), bookOne.getLaunchDate());
-		assertEquals(49.0, bookOne.getPrice());
+		assertEquals(8, bookOne.getId());
+		assertEquals("Domain Driven Design", bookOne.getTitle());
+		assertEquals("Eric Evans", bookOne.getAuthor());
+		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2017-11-07"), bookOne.getLaunchDate());
+		assertEquals(92.0, bookOne.getPrice());
 		
 		BookVO bookTwo = bookList.get(1);
-		
-		assertNotNull(bookTwo);
-		
-		assertTrue(bookTwo.getId() > 0);
 		
 		assertEquals(2, bookTwo.getId());
 		assertEquals("Design Patterns", bookTwo.getTitle());

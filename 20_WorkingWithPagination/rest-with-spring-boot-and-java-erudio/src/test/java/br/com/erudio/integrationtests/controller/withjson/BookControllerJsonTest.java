@@ -18,7 +18,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +27,7 @@ import br.com.erudio.integrationtests.testcontainers.AbstractIntegrationTest;
 import br.com.erudio.integrationtests.vo.AccountCredentialsVO;
 import br.com.erudio.integrationtests.vo.BookVO;
 import br.com.erudio.integrationtests.vo.TokenVO;
+import br.com.erudio.integrationtests.vo.wrappers.WrapperBookVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -191,9 +191,15 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
 	@Test
 	@Order(5)
 	public void testFindAll() throws JsonMappingException, JsonProcessingException, ParseException {
+		Integer page = 1;
+		Integer size = 10;
+		String direction = "desc";
 		
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
 				.when()
 					.get()
 				.then()
@@ -202,25 +208,19 @@ public class BookControllerJsonTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		List<BookVO> bookList = objectMapper.readValue(content, new TypeReference<List<BookVO>>() {});
+		WrapperBookVO wrapper = objectMapper.readValue(content, WrapperBookVO.class);
+		
+		List<BookVO> bookList = wrapper.getEmbedded().getBooks();
 		
 		BookVO bookOne = bookList.get(0);
 		
-		assertNotNull(bookOne);
-		
-		assertTrue(bookOne.getId() > 0);
-		
-		assertEquals(1, bookOne.getId());
-		assertEquals("Working effectively with legacy code", bookOne.getTitle());
-		assertEquals("Michael C. Feathers", bookOne.getAuthor());
-		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2017-11-29"), bookOne.getLaunchDate());
-		assertEquals(49.0, bookOne.getPrice());
+		assertEquals(8, bookOne.getId());
+		assertEquals("Domain Driven Design", bookOne.getTitle());
+		assertEquals("Eric Evans", bookOne.getAuthor());
+		assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2017-11-07"), bookOne.getLaunchDate());
+		assertEquals(92.0, bookOne.getPrice());
 		
 		BookVO bookTwo = bookList.get(1);
-		
-		assertNotNull(bookTwo);
-		
-		assertTrue(bookTwo.getId() > 0);
 		
 		assertEquals(2, bookTwo.getId());
 		assertEquals("Design Patterns", bookTwo.getTitle());
