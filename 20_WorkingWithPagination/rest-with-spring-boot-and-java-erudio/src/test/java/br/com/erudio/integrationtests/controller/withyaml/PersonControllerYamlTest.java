@@ -378,6 +378,57 @@ public class PersonControllerYamlTest extends AbstractIntegrationTest{
 	
 	@Test
 	@Order(7)
+	public void testFindByName() throws JsonMappingException, JsonProcessingException  {
+		String firstName = "ayr";
+		Integer page = 0;
+		Integer size = 10;
+		String direction = "asc";
+		
+		var wrapper = given()
+				.config(
+						RestAssuredConfig
+						.config()
+						.encoderConfig(
+								EncoderConfig
+								.encoderConfig()
+								.encodeContentTypeAs(
+										TestConfigs.CONTENT_TYPE_YML, 
+										ContentType.TEXT
+										)
+								)
+						)
+				.spec(specification)
+				.contentType(TestConfigs.CONTENT_TYPE_YML)
+				.accept(TestConfigs.CONTENT_TYPE_YML)
+				.pathParam("firstName", firstName)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.when()
+					.get("findPersonByName/{firstName}")
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.as(PagedModelPerson.class, objectMapper);
+		
+		
+		List<PersonVO> resultList = wrapper.getContent();
+		
+		assertNotNull(resultList);
+		
+		PersonVO personOne = resultList.get(0);
+		
+		assertEquals(1, personOne.getId());
+		assertEquals("Ayrton", personOne.getFirstName());
+		assertEquals("Senna", personOne.getLastName());
+		assertEquals("São Paulo", personOne.getAddress());
+		assertEquals("Male", personOne.getGender());
+		assertEquals(true, personOne.getEnabled());
+	}
+	
+	@Test
+	@Order(8)
 	public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException  {
 		
 		RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
