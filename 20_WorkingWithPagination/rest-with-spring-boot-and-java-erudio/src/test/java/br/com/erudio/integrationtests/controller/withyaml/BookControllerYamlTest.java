@@ -296,7 +296,7 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	@Order(5)
+	@Order(6)
 	public void testFindAllWithoutToken(){
 		
 		RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
@@ -328,6 +328,55 @@ public class BookControllerYamlTest extends AbstractIntegrationTest {
 			.then()
 				.statusCode(403);
 		
+	}
+	
+	@Test
+	@Order(7)
+	public void testHATEOAS() throws JsonMappingException, JsonProcessingException, ParseException {
+		Integer page = 1;
+		Integer size = 10;
+		String direction = "desc";
+		
+		var unthreadtedContent = given()
+				.config(
+						RestAssuredConfig
+						.config()
+						.encoderConfig(
+							EncoderConfig
+							.encoderConfig()
+							.encodeContentTypeAs(
+								TestConfigs.CONTENT_TYPE_YML, 
+								ContentType.TEXT
+							)
+						)
+					)
+					.spec(specification)
+					.contentType(TestConfigs.CONTENT_TYPE_YML)
+					.accept(TestConfigs.CONTENT_TYPE_YML)
+					.queryParam("page", page)
+					.queryParam("size", size)
+					.queryParam("direction", direction)
+					.when()
+						.get()
+					.then()
+						.statusCode(200)
+					.extract()
+						.body()
+						.asString();
+			
+		
+		var content = unthreadtedContent.replace("\n", "").replace("\r", "");
+		
+		assertTrue(content.contains("href: \"http://localhost:8888/api/book/v1/8\""));
+		assertTrue(content.contains("href: \"http://localhost:8888/api/book/v1/2\""));
+		assertTrue(content.contains("href: \"http://localhost:8888/api/book/v1/5\""));
+		
+		assertTrue(content.contains("rel: \"first\"  href: \"http://localhost:8888/api/book/v1?direction=asc&page=0&size=10&sort=title,desc\""));
+		assertTrue(content.contains("rel: \"prev\"  href: \"http://localhost:8888/api/book/v1?direction=asc&page=0&size=10&sort=title,desc\""));
+		assertTrue(content.contains("rel: \"self\"  href: \"http://localhost:8888/api/book/v1?page=1&size=10&direction=asc\""));
+		assertTrue(content.contains("rel: \"last\"  href: \"http://localhost:8888/api/book/v1?direction=asc&page=1&size=10&sort=title,desc\""));
+		assertTrue(content.contains("page:  size: 10  totalElements: 15  totalPages: 2  number: 1"));
+	
 	}
 	
 	public static void mockBook() {
