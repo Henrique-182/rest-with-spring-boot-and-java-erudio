@@ -462,6 +462,54 @@ public class PersonControllerYamlTest extends AbstractIntegrationTest{
 					.body()
 						.asString();
 	}
+	
+	@Test
+	@Order(9)
+	public void testHATEOAS() {
+		Integer page = 3;
+		Integer size = 10;
+		String direction = "asc";
+		
+		var unthreadtedContent = given()
+			.config(
+					RestAssuredConfig
+					.config()
+					.encoderConfig(
+						EncoderConfig
+						.encoderConfig()
+						.encodeContentTypeAs(
+							TestConfigs.CONTENT_TYPE_YML, 
+							ContentType.TEXT
+						)
+					)
+				)
+				.spec(specification)
+				.contentType(TestConfigs.CONTENT_TYPE_YML)
+				.accept(TestConfigs.CONTENT_TYPE_YML)
+				.queryParam("page", page)
+				.queryParam("size", size)
+				.queryParam("direction", direction)
+				.when()
+					.get()
+				.then()
+					.statusCode(200)
+				.extract()
+					.body()
+					.asString();
+		
+		var content = unthreadtedContent.replace("\n", "").replace("\r", "");
+		
+		assertTrue(content.contains("href: \"http://localhost:8888/api/person/v1/677\""));
+		assertTrue(content.contains("href: \"http://localhost:8888/api/person/v1/414\""));
+		assertTrue(content.contains("href: \"http://localhost:8888/api/person/v1/846\""));
+		
+		assertTrue(content.contains("rel: \"first\"  href: \"http://localhost:8888/api/person/v1?direction=asc&page=0&size=10&sort=firstName,asc\""));
+		assertTrue(content.contains("rel: \"prev\"  href: \"http://localhost:8888/api/person/v1?direction=asc&page=2&size=10&sort=firstName,asc\""));
+		assertTrue(content.contains("rel: \"self\"  href: \"http://localhost:8888/api/person/v1?page=3&size=10&direction=asc\""));
+		assertTrue(content.contains("rel: \"next\"  href: \"http://localhost:8888/api/person/v1?direction=asc&page=4&size=10&sort=firstName,asc\""));
+		assertTrue(content.contains("rel: \"last\"  href: \"http://localhost:8888/api/person/v1?direction=asc&page=100&size=10&sort=firstName,asc\""));
+		assertTrue(content.contains("page:  size: 10  totalElements: 1007  totalPages: 101  number: 3"));
+	}
 
 	private void mockPerson() {
 		person.setFirstName("Nelson");
