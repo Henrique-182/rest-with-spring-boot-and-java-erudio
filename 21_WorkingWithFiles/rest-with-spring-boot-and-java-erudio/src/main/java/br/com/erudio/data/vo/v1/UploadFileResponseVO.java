@@ -1,6 +1,8 @@
 package br.com.erudio.data.vo.v1;
 
-public class UploadFileResponseVO extends RuntimeException {
+import java.io.Serializable;
+
+public class UploadFileResponseVO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
