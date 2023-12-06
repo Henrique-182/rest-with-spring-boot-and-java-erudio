@@ -21,8 +21,8 @@ services:
   rest-with-spring-boot-erudio:
     image: henrick182/rest-with-spring-boot-erudio
     restart: always
-    build: ./22_DockerizingOurApp
-    working_dir: /22_DockerizingOurApp
+    build: ./rest-with-spring-boot-and-java-erudio
+    working_dir: /rest-with-spring-boot-and-java-erudio
     environment:
       TZ: America/Sao_Paulo
       SPRING.DATASOURCE.URL: jdbc:mysql://db:3308/rest_with_spring_boot_erudio?useTimezone=true&serverTimezone=UTC
