@@ -34,10 +34,10 @@ jobs:
 
     - name: Push to Docker Hub Container Registry
       run: |
-        docker tag ${{ secrets.DOCKER_PASSWORD }}/rest-with-spring-boot-erudio:latest ${{ secrets.DOCKER_PASSWORD }}/rest-with-spring-boot-erudio:${{ github.run_id }}
+        docker tag ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:latest ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:${{ github.run_id }}
         
-        push ${{ secrets.DOCKER_PASSWORD }}/rest-with-spring-boot-erudio:latest
-        push ${{ secrets.DOCKER_PASSWORD }}/rest-with-spring-boot-erudio:${{ github.run_id }}
+        push ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:latest
+        push ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:${{ github.run_id }}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
