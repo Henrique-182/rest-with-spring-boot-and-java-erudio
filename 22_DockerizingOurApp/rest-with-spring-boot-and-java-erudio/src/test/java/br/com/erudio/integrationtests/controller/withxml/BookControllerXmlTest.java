@@ -278,14 +278,14 @@ public class BookControllerXmlTest extends AbstractIntegrationTest {
 					.body()
 					.asString();
 		
-		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost/api/book/v1/8</href></links>"));
-		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost/api/book/v1/2</href></links>"));
-		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost/api/book/v1/5</href></links>"));
+		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/book/v1/8</href></links>"));
+		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/book/v1/2</href></links>"));
+		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/book/v1/5</href></links>"));
 		
-		assertTrue(content.contains("<links><rel>first</rel><href>http://localhost/api/book/v1?direction=asc&amp;page=0&amp;size=10&amp;sort=title,desc</href></links>"));
-		assertTrue(content.contains("<links><rel>prev</rel><href>http://localhost/api/book/v1?direction=asc&amp;page=0&amp;size=10&amp;sort=title,desc</href></links>"));
-		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost/api/book/v1?page=1&amp;size=10&amp;direction=asc</href></links>"));
-		assertTrue(content.contains("<links><rel>last</rel><href>http://localhost/api/book/v1?direction=asc&amp;page=1&amp;size=10&amp;sort=title,desc</href></links>"));
+		assertTrue(content.contains("<links><rel>first</rel><href>http://localhost:8888/api/book/v1?direction=asc&amp;page=0&amp;size=10&amp;sort=title,desc</href></links>"));
+		assertTrue(content.contains("<links><rel>prev</rel><href>http://localhost:8888/api/book/v1?direction=asc&amp;page=0&amp;size=10&amp;sort=title,desc</href></links>"));
+		assertTrue(content.contains("<links><rel>self</rel><href>http://localhost:8888/api/book/v1?page=1&amp;size=10&amp;direction=asc</href></links>"));
+		assertTrue(content.contains("<links><rel>last</rel><href>http://localhost:8888/api/book/v1?direction=asc&amp;page=1&amp;size=10&amp;sort=title,desc</href></links>"));
 		assertTrue(content.contains("<page><size>10</size><totalElements>15</totalElements><totalPages>2</totalPages><number>1</number></page>"));
 	}
 	

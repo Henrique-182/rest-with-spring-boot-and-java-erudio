@@ -1,7 +1,7 @@
 server:
   port: 8888
 file:
-  upload-dir: /Users/henri/OneDrive/Documentos/GitHub/rest-with-spring-boot-and-java-erudio/21_WorkingWithFiles/Upload
+  upload-dir: /home/runner/work/rest-with-spring-boot-and-java-erudio/Upload
 cors:
   originPatterns: http://localhost:3000,http://localhost:8080,https://erudio.com.br
 security:
