@@ -24,7 +24,7 @@ public class ChatGptService {
 	@Autowired
 	private RestTemplate template;
 	
-	public Object chat(String prompt) {
+	public String chat(String prompt) {
 		logger.info("Starting Chat");
 		
 		ChatGptRequest request = new ChatGptRequest(model, prompt);
@@ -33,7 +33,7 @@ public class ChatGptService {
 		
 		ChatGptResponse response = template.postForObject(url, request, ChatGptResponse.class);
 		
-		return response;
+		return response.getChoices().get(0).getMessage().getContent();
 	}
 	
 }
